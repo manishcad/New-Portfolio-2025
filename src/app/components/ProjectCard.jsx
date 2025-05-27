@@ -2,11 +2,11 @@
 
 import Link from 'next/link'
 
-export default function ProjectCard({ title, description, image, github, demo }) {
+export default function ProjectCard({ title, description, imageUrl, github, demo }) {
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition">
       <img
-        src={image}
+        src={imageUrl}
         alt={title}
         className="w-full h-48 object-cover"
       />

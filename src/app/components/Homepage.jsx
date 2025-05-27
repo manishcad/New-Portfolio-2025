@@ -33,15 +33,16 @@ export default function HomePage() {
         </div>
 
         {/* Right Section - Image */}
-        <div className="relative  w-full h-[300px] md:h-[400px] lg:h-[500px]">
-          <Image
-            src="/my-image.jpg" // <-- Replace this with your image in /public
-            alt="Developer Illustration"
-            fill
-            style={{ objectFit: 'contain' }}
-            priority
-          />
-        </div>
+        <div className="relative w-60 h-60 md:w-80 md:h-80 mx-auto rounded-full overflow-hidden border-4 border-white shadow-[0_0_30px_#22d3ee]">
+            <Image
+                src="/my-image3.jpg"
+                alt="Manish Chand"
+                fill
+                style={{ objectFit: 'cover' }}
+                priority
+                className="rounded-full"
+            />
+</div>
       </div>
     </main>
   )

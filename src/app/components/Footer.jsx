@@ -22,18 +22,18 @@ export default function Footer() {
         <div>
           <h4 className="text-xl font-semibold mb-2">Follow Me</h4>
           <div className="flex justify-center md:justify-start gap-4 mt-2">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/manishcad" target="_blank" rel="noopener noreferrer">
               <FaGithub size={24} className="hover:text-yellow-400" />
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.linkedin.com/in/manish-chand-3b7b4a158/" target="_blank" rel="noopener noreferrer">
               <FaLinkedin size={24} className="hover:text-yellow-400" />
             </a>
-            <a href="mailto:your@email.com">
+            <a href="/contact">
               <FaEnvelope size={24} className="hover:text-yellow-400" />
             </a>
           </div>
-          <div className="mt-4">
-            <Image src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP3y2YuTNlHFCJ00nuputMwtPN_lVoh0ge_Q&s" alt="Logo" width={100} height={40} />
+          <div className="mt-6 flex justify-center sm:block md:block" style={{cursor:"pointer"}}>
+            <Image src="/coding.jpg" alt="Logo" width={100} height={40} />
           </div>
         </div>
       </div>
