@@ -13,14 +13,16 @@ export default function AboutPage() {
       try {
         setLoading(true)
         const response = await fetch('/api/skills')
-        if (!response.ok) {
-          throw new Error('Failed to fetch skills')
-        }
         const data = await response.json()
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to fetch skills')
+        }
+        
         setSkills(data)
       } catch (err) {
-        console.error('Error fetching skills:', err)
-        setError('Failed to load skills. Please try again later.')
+        // console.error('Error fetching skills:', err)
+        setError(err.message || 'Failed to load skills. Please try again later.')
       } finally {
         setLoading(false)
       }

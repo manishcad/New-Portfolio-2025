@@ -44,7 +44,7 @@ export async function POST(req) {
 
     // Save file to disk
     await fs.writeFile(filePath, buffer);
-    console.log(fileName,"THis is file name")
+    // console.log(fileName,"THis is file name")
     // Store relative URL in DB
     const imageUrl = `/uploads/${fileName}`;
 
@@ -61,7 +61,7 @@ export async function POST(req) {
 
     return NextResponse.json({ success: true, project }, { status: 201 });
   } catch (error) {
-    console.error("Error in API route:", error);
+    // console.error("Error in API route:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -71,6 +71,8 @@ export async function POST(req) {
 
 export async function GET() {
   try {
+    
+    
     const projects = await prisma.project.findMany({
       orderBy: { createdAt: 'desc' },
     });
@@ -92,7 +94,7 @@ export async function GET() {
 
     return NextResponse.json(projectsWithImages);
   } catch (error) {
-    console.error("GET error:", error);
+    // console.error("GET error:", error);
     return NextResponse.json({ error: "Failed to fetch projects", error }, { status: 500 });
   }
 }
@@ -141,9 +143,9 @@ export async function PUT(req) {
         const oldImagePath = path.join(process.cwd(), 'public/uploads', existingProject.imageName);
         try {
           await fs.unlink(oldImagePath);
-        } catch (error) {
-          console.error("Error deleting old image file:", error);
-        }
+              } catch (error) {
+        // console.error("Error deleting old image file:", error);
+      }
       }
 
       // Save new image
@@ -177,7 +179,7 @@ export async function PUT(req) {
     });
 
   } catch (error) {
-    console.error("PUT error:", error);
+    // console.error("PUT error:", error);
     return NextResponse.json(
       { error: "Failed to update project" },
       { status: 500 }
@@ -215,7 +217,7 @@ export async function DELETE(req) {
       try {
         await fs.unlink(imagePath);
       } catch (error) {
-        console.error("Error deleting image file:", error);
+        // console.error("Error deleting image file:", error);
         // Continue with project deletion even if image deletion fails
       }
     }
@@ -231,7 +233,7 @@ export async function DELETE(req) {
     });
 
   } catch (error) {
-    console.error("DELETE error:", error);
+    // console.error("DELETE error:", error);
     return NextResponse.json(
       { error: "Failed to delete project" },
       { status: 500 }
