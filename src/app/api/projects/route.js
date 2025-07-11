@@ -14,39 +14,54 @@ export const config = {
 
 export async function POST(req) {
   try {
-    const formData = await req.formData();
+    // Check if the request is JSON or FormData
+    const contentType = req.headers.get('content-type');
+    
+    let title, description, githubLink, liveDemo, imageUrl;
 
-    const title = formData.get("title");
-    const description = formData.get("description");
-    const githubLink = formData.get("githubLink");
-    const liveDemo = formData.get("liveDemo");
-    const imageFile = formData.get("image");
+    if (contentType && contentType.includes('application/json')) {
+      // Handle JSON request (from new admin panel)
+      const body = await req.json();
+      title = body.title;
+      description = body.description;
+      githubLink = body.githubLink;
+      liveDemo = body.liveDemo;
+      imageUrl = body.imageUrl;
+    } else {
+      // Handle FormData request (backward compatibility)
+      const formData = await req.formData();
+      title = formData.get("title");
+      description = formData.get("description");
+      githubLink = formData.get("githubLink");
+      liveDemo = formData.get("liveDemo");
+      const imageFile = formData.get("image");
 
-    if (!title || !description || !githubLink || !imageFile) {
+      if (imageFile) {
+        // Convert File (Blob) to Buffer
+        const arrayBuffer = await imageFile.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        // Ensure uploads directory exists
+        const uploadsDir = path.join(process.cwd(), "public/uploads");
+        await fs.mkdir(uploadsDir, { recursive: true });
+
+        // Create unique file name
+        let fileName = `${Date.now()}-${imageFile.name}`;
+        fileName = fileName.replace(/\s+/g, '-');
+        const filePath = path.join(uploadsDir, fileName);
+
+        // Save file to disk
+        await fs.writeFile(filePath, buffer);
+        imageUrl = `/uploads/${fileName}`;
+      }
+    }
+
+    if (!title || !description || !githubLink || !imageUrl) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
     }
-
-    // Convert File (Blob) to Buffer
-    const arrayBuffer = await imageFile.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    // Ensure uploads directory exists
-    const uploadsDir = path.join(process.cwd(), "public/uploads");
-    await fs.mkdir(uploadsDir, { recursive: true });
-
-    // Create unique file name
-    let fileName = `${Date.now()}-${imageFile.name}`;
-    fileName = fileName.replace(/\s+/g, '-');
-    const filePath = path.join(uploadsDir, fileName);
-
-    // Save file to disk
-    await fs.writeFile(filePath, buffer);
-    // console.log(fileName,"THis is file name")
-    // Store relative URL in DB
-    const imageUrl = `/uploads/${fileName}`;
 
     const project = await prisma.project.create({
       data: {
@@ -55,7 +70,7 @@ export async function POST(req) {
         githubLink,
         liveDemo: liveDemo || null,
         imageUrl,
-        imageName: fileName
+        imageName: imageUrl.split('/').pop() // Extract filename from URL
       },
     });
 

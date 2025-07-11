@@ -17,7 +17,7 @@ export default function AdminDashboard() {
     description: '',
     githubLink: '',
     liveDemo: '',
-    image: null
+    imageUrl: ''
   })
 
   const [skillForm, setSkillForm] = useState({
@@ -80,17 +80,24 @@ export default function AdminDashboard() {
   const handleAddProject = async (e) => {
     e.preventDefault()
     
+    if (!projectForm.imageUrl) {
+      setError('Please upload an image first')
+      return
+    }
+    
     try {
-      const formData = new FormData()
-      formData.append('title', projectForm.title)
-      formData.append('description', projectForm.description)
-      formData.append('githubLink', projectForm.githubLink)
-      formData.append('liveDemo', projectForm.liveDemo)
-      formData.append('image', projectForm.image)
-
       const res = await fetch('/api/projects', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: projectForm.title,
+          description: projectForm.description,
+          githubLink: projectForm.githubLink,
+          liveDemo: projectForm.liveDemo,
+          imageUrl: projectForm.imageUrl
+        })
       })
 
       if (res.ok) {
@@ -99,7 +106,7 @@ export default function AdminDashboard() {
           description: '',
           githubLink: '',
           liveDemo: '',
-          image: null
+          imageUrl: ''
         })
         fetchData() // Refresh data
       } else {
@@ -169,6 +176,32 @@ export default function AdminDashboard() {
         setSkills(skills.filter(s => s.id !== id))
       } else {
         throw new Error('Failed to delete skill')
+      }
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    try {
+      const formData = new FormData()
+      formData.append('image', file)
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        setProjectForm({ ...projectForm, imageUrl: data.url })
+        setError('') // Clear any previous errors
+      } else {
+        const errorData = await res.json()
+        throw new Error(errorData.error || 'Upload failed')
       }
     } catch (err) {
       setError(err.message)
@@ -292,10 +325,19 @@ export default function AdminDashboard() {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => setProjectForm({...projectForm, image: e.target.files[0]})}
+                    onChange={handleImageUpload}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
                   />
+                  {projectForm.imageUrl && (
+                    <div className="mt-2">
+                      <img
+                        src={projectForm.imageUrl}
+                        alt="Uploaded project image"
+                        className="w-full h-32 object-cover rounded-md border"
+                      />
+                      <p className="text-sm text-green-600 mt-1">✓ Image uploaded successfully</p>
+                    </div>
+                  )}
                 </div>
                 <button
                   type="submit"
