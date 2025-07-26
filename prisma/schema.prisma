@@ -12,16 +12,23 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  
 }
 
 model Project {
   id          Int     @id @default(autoincrement())
   title       String
-  description String
+  description String?
   githubLink  String
   liveDemo    String?
   imageName   String
-  imageType   String
-  imageData   Bytes   // optional if storing image in DB
+  imageUrl  String? // optional if storing image in DB
   createdAt   DateTime @default(now())
+}
+
+model Skill{
+  id Int @id @default(autoincrement())
+  name String
+  image String
+  description String?
 }

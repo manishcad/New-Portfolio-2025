@@ -2,7 +2,6 @@
   "name": "my-portfolio",
   "version": "0.1.0",
   "private": true,
-  
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,7 +10,11 @@
   },
   "dependencies": {
     "@prisma/client": "^6.8.2",
+    "@supabase/supabase-js": "^2.49.8",
+    "cloudinary": "^2.6.1",
+    "formidable": "^3.5.4",
     "next": "15.3.2",
+    "next-cloudinary": "^6.16.0",
     "nodemailer": "^7.0.3",
     "prisma": "^6.8.2",
     "react": "^19.0.0",

@@ -2,6 +2,9 @@
 
 import { useState } from 'react'
 
+// Note: metadata export must be at top level, but since this is a client component,
+// we'll need to move metadata to layout.jsx or convert to server component with client form
+
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState(null)
